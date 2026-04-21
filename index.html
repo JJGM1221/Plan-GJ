@@ -1,701 +1,167 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan JG · Tracker de Cargas</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0c0c0c;
-  --surface: #141414;
-  --surface2: #1a1a1a;
-  --border: #242424;
-  --border2: #2e2e2e;
-  --accent: #c8ff00;
-  --accent-dim: #c8ff0020;
-  --orange: #ff5c1a;
-  --orange-dim: #ff5c1a18;
-  --blue: #3d9eff;
-  --blue-dim: #3d9eff18;
-  --purple: #9f6fff;
-  --purple-dim: #9f6fff18;
-  --green: #1fd97a;
-  --green-dim: #1fd97a18;
-  --amber: #ffb800;
-  --amber-dim: #ffb80018;
-  --cyan: #00d4d4;
-  --cyan-dim: #00d4d418;
-  --text: #efefef;
-  --muted: #666;
-  --muted2: #444;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* ── NAV ── */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #0c0c0cee;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.nav::-webkit-scrollbar { display: none; }
-
-.nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  color: var(--accent);
-  padding: 0 20px;
-  letter-spacing: 2px;
-  white-space: nowrap;
-  border-right: 1px solid var(--border);
-  height: 48px;
-  display: flex;
-  align-items: center;
-}
-
-.nav-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 0 16px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border: none;
-  background: none;
-  white-space: nowrap;
-  transition: color 0.15s, background 0.15s;
-  border-right: 1px solid var(--border);
-}
-.nav-btn:hover { color: var(--text); background: #ffffff06; }
-.nav-btn.active { color: var(--accent); background: var(--accent-dim); }
-
-/* ── VIEWS ── */
-.view { display: none; }
-.view.active { display: block; }
-
-/* ── HERO ── */
-.hero {
-  padding: 52px 32px 40px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse 60% 80% at 80% 50%, #c8ff0008 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--accent);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 18px;
-}
-.hero-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(60px, 10vw, 100px);
-  line-height: 0.92;
-  letter-spacing: 2px;
-  margin-bottom: 28px;
-}
-.hero-title em { color: var(--accent); font-style: normal; }
-.hero-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chip {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 2px;
-  border: 1px solid;
-}
-.chip.g { color: var(--green); border-color: #1fd97a40; background: var(--green-dim); }
-.chip.a { color: var(--accent); border-color: #c8ff0040; background: var(--accent-dim); }
-.chip.o { color: var(--orange); border-color: #ff5c1a40; background: var(--orange-dim); }
-.chip.c { color: var(--cyan); border-color: #00d4d440; background: var(--cyan-dim); }
-
-/* ── STATS BAR ── */
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid var(--border);
-}
-.stat {
-  padding: 22px 28px;
-  border-right: 1px solid var(--border);
-}
-.stat:last-child { border-right: none; }
-.stat-n {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 42px;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-n.y { color: var(--accent); }
-.stat-n.o { color: var(--orange); }
-.stat-n.g { color: var(--green); }
-.stat-n.b { color: var(--blue); }
-.stat-d {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-/* ── SECTION HEADER ── */
-.sec-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 36px 32px 20px;
-}
-.sec-head-txt {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 4px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.sec-head-line { flex: 1; height: 1px; background: var(--border); }
-
-/* ── SESSION GRID ── */
-.sessions {
-  padding: 0 32px 48px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-  gap: 16px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.card-head {
-  padding: 18px 22px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-}
-.card-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-.card-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 1px;
-  line-height: 1.1;
-}
-.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-.tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 2px;
-  border: 1px solid;
-}
-.tag.chest { color: var(--orange); border-color: #ff5c1a35; background: var(--orange-dim); }
-.tag.back { color: var(--blue); border-color: #3d9eff35; background: var(--blue-dim); }
-.tag.sh { color: var(--purple); border-color: #9f6fff35; background: var(--purple-dim); }
-.tag.legs { color: var(--green); border-color: #1fd97a35; background: var(--green-dim); }
-.tag.arms { color: var(--amber); border-color: #ffb80035; background: var(--amber-dim); }
-.tag.cardio { color: var(--cyan); border-color: #00d4d435; background: var(--cyan-dim); }
-
-.badge {
-  flex-shrink: 0;
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 4px 9px;
-  border-radius: 2px;
-  border: 1px solid;
-  white-space: nowrap;
-}
-.badge.cardio { color: var(--cyan); border-color: #00d4d430; background: var(--cyan-dim); }
-.badge.rest { color: var(--muted); border-color: #44444430; background: #44444410; }
-
-.warmup {
-  padding: 10px 22px;
-  background: #ffffff04;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-.warmup-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 4px; }
-.warmup-txt { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.5px; line-height: 1.5; }
-
-.super-note {
-  margin: 0 22px 0;
-  padding: 8px 12px;
-  background: var(--orange-dim);
-  border-left: 2px solid var(--orange);
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: #ff5c1a88;
-  letter-spacing: 0.5px;
-  margin-top: 10px;
-}
-
-/* ── EXERCISE ROWS ── */
-.ex {
-  display: grid;
-  grid-template-columns: 26px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 22px;
-  border-bottom: 1px solid #181818;
-  transition: background 0.1s;
-}
-.ex:hover { background: #ffffff03; }
-.ex:last-of-type { border-bottom: none; }
-.ex.ss {
-  border-left: 2px solid var(--orange);
-  padding-left: 20px;
-  background: #ff5c1a05;
-}
-.ex-i {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 16px;
-  color: var(--muted2);
-}
-.ex-name {
-  font-size: 12.5px;
-  font-weight: 500;
-  line-height: 1.3;
-}
-.ex-note {
-  font-size: 10.5px;
-  color: var(--muted);
-  font-weight: 300;
-  margin-top: 1px;
-}
-.ex-scheme { text-align: right; flex-shrink: 0; }
-.ex-sets {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  color: var(--accent);
-  line-height: 1;
-}
-.ex-reps {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-}
-
-/* ── CARDIO BLOCK ── */
-.cardio-blk {
-  margin: 12px 22px 18px;
-  border: 1px solid #00d4d425;
-  border-radius: 2px;
-  background: var(--cyan-dim);
-  padding: 14px;
-}
-.cardio-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--cyan);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.cardio-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-.cardio-row:last-of-type { margin-bottom: 0; }
-.cardio-ph { font-size: 11px; color: var(--text); }
-.cardio-detail { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
-.cardio-sep { height: 1px; background: #00d4d415; margin: 10px 0; }
-.cardio-total-row { display: flex; justify-content: space-between; align-items: center; }
-.cardio-total-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
-.cardio-total-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--cyan); }
-
-/* ── HIIT BLOCK ── */
-.hiit-blk {
-  margin: 12px 22px 18px;
-  border: 1px solid #9f6fff25;
-  border-radius: 2px;
-  background: var(--purple-dim);
-  padding: 14px;
-}
-.hiit-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--purple);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.hiit-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-.hiit-ph { font-size: 11px; color: var(--text); }
-.hiit-detail { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
-
-/* ── PRINCIPLES ── */
-.principles {
-  padding: 0 32px 48px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  margin: 0 32px 48px;
-}
-.principle {
-  background: var(--surface);
-  padding: 22px;
-}
-.principle-icon { font-size: 20px; margin-bottom: 8px; }
-.principle-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 17px;
-  letter-spacing: 1px;
-  color: var(--accent);
-  margin-bottom: 6px;
-}
-.principle-txt { font-size: 11.5px; color: var(--muted); line-height: 1.65; }
-
-/* ── TRACKER ── */
-#view-tracker { padding: 0 32px 60px; }
-
-.tracker-hero {
-  padding: 36px 0 28px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
-}
-.tracker-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 48px;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-}
-.tracker-title span { color: var(--accent); }
-.tracker-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-
-.week-selector {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-}
-.week-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.week-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
-.week-tab {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  padding: 6px 14px;
-  border: 1px solid var(--border2);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.15s;
-}
-.week-tab:hover { color: var(--text); border-color: #444; }
-.week-tab.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
-
-.add-week-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  padding: 6px 14px;
-  border: 1px dashed var(--border2);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.15s;
-}
-.add-week-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-.tracker-sessions { display: flex; flex-direction: column; gap: 20px; }
-
-.tracker-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.tracker-card-head {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.1s;
-}
-.tracker-card-head:hover { background: #ffffff04; }
-.tracker-card-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 1px;
-}
-.tracker-toggle {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  transition: color 0.15s;
-}
-.tracker-card-head:hover .tracker-toggle { color: var(--accent); }
-
-.tracker-body { display: none; }
-.tracker-body.open { display: block; }
-
-.tracker-ex-row {
-  display: grid;
-  grid-template-columns: 1fr repeat(4, 80px);
-  gap: 8px;
-  align-items: center;
-  padding: 10px 20px;
-  border-bottom: 1px solid #181818;
-}
-.tracker-ex-row:last-child { border-bottom: none; }
-.tracker-ex-row.header-row {
-  padding: 8px 20px;
-  background: #111;
-  border-bottom: 1px solid var(--border);
-}
-.tracker-col-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-align: center;
-}
-.tracker-col-head:first-child { text-align: left; }
-.tracker-ex-name-t { font-size: 12px; font-weight: 500; }
-.tracker-ex-scheme-t {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.load-input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  text-align: center;
-  padding: 6px 4px;
-  transition: border-color 0.15s, background 0.15s;
-  outline: none;
-}
-.load-input:focus {
-  border-color: var(--accent);
-  background: var(--accent-dim);
-  color: var(--accent);
-}
-.load-input::placeholder { color: var(--muted2); font-size: 10px; }
-.load-input.filled { border-color: #1fd97a40; color: var(--green); background: var(--green-dim); }
-
-.tracker-notes-row {
-  padding: 10px 20px 14px;
-  border-top: 1px solid var(--border);
-  background: #ffffff03;
-}
-.notes-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.notes-input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  padding: 8px 10px;
-  resize: none;
-  outline: none;
-  transition: border-color 0.15s;
-  min-height: 48px;
-}
-.notes-input:focus { border-color: var(--accent); }
-.notes-input::placeholder { color: var(--muted2); }
-
-/* Save / Export bar */
-.action-bar {
-  display: flex;
-  gap: 10px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-.btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 10px 20px;
-  border-radius: 2px;
-  border: 1px solid;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-primary {
-  background: var(--accent);
-  color: #0c0c0c;
-  border-color: var(--accent);
-  font-weight: 600;
-}
-.btn-primary:hover { background: #d4ff1a; }
-.btn-secondary {
-  background: none;
-  color: var(--muted);
-  border-color: var(--border2);
-}
-.btn-secondary:hover { color: var(--text); border-color: #555; }
-.btn-danger {
-  background: none;
-  color: #ff4444;
-  border-color: #ff444430;
-}
-.btn-danger:hover { background: #ff444415; }
-
-.save-status {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--green);
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.save-status.show { opacity: 1; }
-
-/* Progress summary */
-.progress-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-  margin-bottom: 28px;
-}
-.progress-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 16px;
-}
-.progress-card-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.progress-card-val {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 30px;
-  color: var(--accent);
-  line-height: 1;
-}
-.progress-card-sub {
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 3px;
-}
-
-@media (max-width: 640px) {
-  .stats-bar { grid-template-columns: repeat(2,1fr); }
-  .stat { border-right: none; border-bottom: 1px solid var(--border); }
-  .hero, .sec-head { padding-left: 20px; padding-right: 20px; }
-  .sessions { padding: 0 20px 40px; grid-template-columns: 1fr; }
-  .principles { margin: 0 20px 40px; }
-  #view-tracker { padding: 0 20px 48px; }
-  .tracker-ex-row { grid-template-columns: 1fr repeat(2, 70px); }
-  .tracker-ex-row .load-input:nth-child(4),
-  .tracker-ex-row .load-input:nth-child(5) { display: none; }
-  .tracker-col-head:nth-child(4),
-  .tracker-col-head:nth-child(5) { display: none; }
+:root{--bg:#0c0c0c;--surface:#141414;--surface2:#1a1a1a;--border:#242424;--border2:#2e2e2e;--accent:#c8ff00;--accent-dim:#c8ff0020;--orange:#ff5c1a;--orange-dim:#ff5c1a18;--blue:#3d9eff;--blue-dim:#3d9eff18;--purple:#9f6fff;--purple-dim:#9f6fff18;--green:#1fd97a;--green-dim:#1fd97a18;--amber:#ffb800;--amber-dim:#ffb80018;--cyan:#00d4d4;--cyan-dim:#00d4d418;--text:#efefef;--muted:#666;--muted2:#444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.nav{position:sticky;top:0;z-index:100;background:#0c0c0cee;backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);padding:0 20px;letter-spacing:2px;white-space:nowrap;border-right:1px solid var(--border);height:48px;display:flex;align-items:center;}
+.nav-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:0 16px;height:48px;display:flex;align-items:center;cursor:pointer;border:none;background:none;white-space:nowrap;transition:color .15s,background .15s;border-right:1px solid var(--border);}
+.nav-btn:hover{color:var(--text);background:#ffffff06;}
+.nav-btn.active{color:var(--accent);background:var(--accent-dim);}
+.view{display:none;}.view.active{display:block;}
+.hero{padding:52px 32px 40px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,#c8ff0008 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,100px);line-height:.92;letter-spacing:2px;margin-bottom:28px;}
+.hero-title em{color:var(--accent);font-style:normal;}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:2px;border:1px solid;}
+.chip.g{color:var(--green);border-color:#1fd97a40;background:var(--green-dim);}
+.chip.a{color:var(--accent);border-color:#c8ff0040;background:var(--accent-dim);}
+.chip.o{color:var(--orange);border-color:#ff5c1a40;background:var(--orange-dim);}
+.chip.c{color:var(--cyan);border-color:#00d4d440;background:var(--cyan-dim);}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.stat{padding:22px 28px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;margin-bottom:4px;}
+.stat-n.y{color:var(--accent);}.stat-n.o{color:var(--orange);}.stat-n.g{color:var(--green);}.stat-n.b{color:var(--blue);}
+.stat-d{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+.sec-head{display:flex;align-items:center;gap:16px;padding:36px 32px 20px;}
+.sec-head-txt{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:var(--muted);white-space:nowrap;}
+.sec-head-line{flex:1;height:1px;background:var(--border);}
+.sessions{padding:0 32px 48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.card-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.card-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;line-height:1.1;}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:2px;border:1px solid;}
+.tag.chest{color:var(--orange);border-color:#ff5c1a35;background:var(--orange-dim);}
+.tag.back{color:var(--blue);border-color:#3d9eff35;background:var(--blue-dim);}
+.tag.sh{color:var(--purple);border-color:#9f6fff35;background:var(--purple-dim);}
+.tag.legs{color:var(--green);border-color:#1fd97a35;background:var(--green-dim);}
+.tag.arms{color:var(--amber);border-color:#ffb80035;background:var(--amber-dim);}
+.tag.cardio{color:var(--cyan);border-color:#00d4d435;background:var(--cyan-dim);}
+.badge{flex-shrink:0;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:2px;border:1px solid;white-space:nowrap;}
+.badge.cardio{color:var(--cyan);border-color:#00d4d430;background:var(--cyan-dim);}
+.badge.hiit{color:var(--purple);border-color:#9f6fff30;background:var(--purple-dim);}
+.badge.rest{color:var(--muted);border-color:#44444430;background:#44444410;}
+.warmup{padding:10px 22px;background:#ffffff04;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;}
+.warmup-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
+.warmup-txt{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.5px;line-height:1.5;}
+.super-note{margin:10px 22px 0;padding:8px 12px;background:var(--orange-dim);border-left:2px solid var(--orange);font-family:'DM Mono',monospace;font-size:9px;color:#ff5c1a88;letter-spacing:.5px;}
+.ex{display:grid;grid-template-columns:26px 1fr auto;align-items:start;gap:10px;padding:12px 22px;border-bottom:1px solid #181818;transition:background .1s;}
+.ex:hover{background:#ffffff03;}
+.ex:last-of-type{border-bottom:none;}
+.ex.ss{border-left:2px solid var(--orange);padding-left:20px;background:#ff5c1a05;}
+.ex-i{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted2);padding-top:2px;}
+.ex-name{font-size:12.5px;font-weight:500;line-height:1.3;}
+.ex-note{font-size:10.5px;color:var(--muted);font-weight:300;margin-top:1px;}
+.ex-alt{font-size:10px;color:#3d9eff88;font-style:italic;margin-top:3px;}
+.ex-alt::before{content:'↳ alt: ';color:#3d9eff55;}
+.ex-scheme{text-align:right;flex-shrink:0;}
+.ex-sets{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1;}
+.ex-reps{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);}
+.cardio-blk{margin:12px 22px 18px;border:1px solid #00d4d425;border-radius:2px;background:var(--cyan-dim);padding:14px;}
+.cardio-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.cardio-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.cardio-ph{font-size:11px;color:var(--text);}
+.cardio-detail{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);}
+.cardio-sep{height:1px;background:#00d4d415;margin:10px 0;}
+.cardio-total-row{display:flex;justify-content:space-between;align-items:center;}
+.cardio-total-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;}
+.cardio-total-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--cyan);}
+.hiit-blk{margin:12px 22px 18px;border:1px solid #9f6fff25;border-radius:2px;background:var(--purple-dim);padding:14px;}
+.hiit-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.hiit-row{display:flex;justify-content:space-between;margin-bottom:4px;}
+.hiit-ph{font-size:11px;color:var(--text);}
+.hiit-detail{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);}
+.principles{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:0 32px 48px;}
+.principle{background:var(--surface);padding:22px;}
+.principle-icon{font-size:20px;margin-bottom:8px;}
+.principle-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--accent);margin-bottom:6px;}
+.principle-txt{font-size:11.5px;color:var(--muted);line-height:1.65;}
+#view-tracker{padding:0 32px 60px;}
+.tracker-hero{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px;}
+.tracker-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;margin-bottom:6px;}
+.tracker-title span{color:var(--accent);}
+.tracker-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+.week-selector{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
+.week-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.week-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.week-tab{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 14px;border:1px solid var(--border2);background:none;color:var(--muted);cursor:pointer;border-radius:2px;transition:all .15s;}
+.week-tab:hover{color:var(--text);border-color:#444;}
+.week-tab.active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim);}
+.add-week-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 14px;border:1px dashed var(--border2);background:none;color:var(--muted);cursor:pointer;border-radius:2px;transition:all .15s;}
+.add-week-btn:hover{color:var(--accent);border-color:var(--accent);}
+.tracker-sessions{display:flex;flex-direction:column;gap:20px;}
+.tracker-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.tracker-card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .1s;}
+.tracker-card-head:hover{background:#ffffff04;}
+.tracker-card-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+.tracker-toggle{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;transition:color .15s;}
+.tracker-card-head:hover .tracker-toggle{color:var(--accent);}
+.tracker-body{display:none;}.tracker-body.open{display:block;}
+.tracker-ex-row{display:grid;grid-template-columns:1fr repeat(4,72px);gap:6px;align-items:center;padding:10px 20px;border-bottom:1px solid #181818;}
+.tracker-ex-row:last-child{border-bottom:none;}
+.tracker-ex-row.header-row{padding:8px 20px;background:#111;border-bottom:1px solid var(--border);}
+.tracker-col-head{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
+.tracker-col-head:first-child{text-align:left;}
+.tracker-ex-name-t{font-size:12px;font-weight:500;}
+.tracker-ex-scheme-t{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.tracker-ex-alt-t{font-size:10px;color:#3d9eff66;font-style:italic;margin-top:2px;}
+.load-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:2px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;text-align:center;padding:6px 2px;transition:border-color .15s,background .15s;outline:none;}
+.load-input:focus{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+.load-input::placeholder{color:var(--muted2);font-size:9px;}
+.load-input.filled{border-color:#1fd97a40;color:var(--green);background:var(--green-dim);}
+.tracker-notes-row{padding:10px 20px 14px;border-top:1px solid var(--border);background:#ffffff03;}
+.notes-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.notes-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:2px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;resize:none;outline:none;transition:border-color .15s;min-height:48px;}
+.notes-input:focus{border-color:var(--accent);}
+.notes-input::placeholder{color:var(--muted2);}
+.action-bar{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;align-items:center;}
+.btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;border-radius:2px;border:1px solid;cursor:pointer;transition:all .15s;}
+.btn-primary{background:var(--accent);color:#0c0c0c;border-color:var(--accent);font-weight:600;}
+.btn-primary:hover{background:#d4ff1a;}
+.btn-secondary{background:none;color:var(--muted);border-color:var(--border2);}
+.btn-secondary:hover{color:var(--text);border-color:#555;}
+.btn-danger{background:none;color:#ff4444;border-color:#ff444430;}
+.btn-danger:hover{background:#ff444415;}
+.save-status{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px;display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .3s;}
+.save-status.show{opacity:1;}
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:28px;}
+.progress-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:16px;}
+.progress-card-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.progress-card-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);line-height:1;}
+.progress-card-sub{font-size:10px;color:var(--muted);margin-top:3px;}
+@media(max-width:640px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .hero,.sec-head{padding-left:20px;padding-right:20px;}
+  .sessions{padding:0 20px 40px;grid-template-columns:1fr;}
+  .principles{margin:0 20px 40px;}
+  #view-tracker{padding:0 20px 48px;}
+  .tracker-ex-row{grid-template-columns:1fr repeat(2,64px);}
+  .tracker-ex-row .load-input:nth-child(4),.tracker-ex-row .load-input:nth-child(5){display:none;}
+  .tracker-col-head:nth-child(4),.tracker-col-head:nth-child(5){display:none;}
 }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav class="nav">
   <div class="nav-logo">JG</div>
-  <button class="nav-btn active" onclick="showView('plan')">Plan</button>
-  <button class="nav-btn" onclick="showView('tracker')">Tracker de Cargas</button>
+  <button class="nav-btn" onclick="showView('plan',this)">Plan</button>
+  <button class="nav-btn active" onclick="showView('tracker',this)">Tracker de Cargas</button>
 </nav>
 
-<!-- ══════════════════════════════════════ PLAN VIEW ══════════════════════════════════════ -->
-<div id="view-plan" class="view active">
-
+<div id="view-plan" class="view">
 <div class="hero">
   <div class="hero-eyebrow">Plan de Entrenamiento · Hipertrofia + Definición · 2026</div>
   <div class="hero-title">JONATHAN<br><em>GARCÍA</em></div>
@@ -706,245 +172,115 @@ body {
     <span class="chip c">Cardio 4 días</span>
   </div>
 </div>
-
 <div class="stats-bar">
   <div class="stat"><div class="stat-n y">44</div><div class="stat-d">kg perdidos · histórico</div></div>
   <div class="stat"><div class="stat-n o">125.8</div><div class="stat-d">kg peso actual</div></div>
   <div class="stat"><div class="stat-n g">77.0</div><div class="stat-d">kg masa muscular</div></div>
   <div class="stat"><div class="stat-n b">93.7</div><div class="stat-d">kg peso objetivo</div></div>
 </div>
-
 <div class="sec-head"><div class="sec-head-txt">Sesiones</div><div class="sec-head-line"></div></div>
-
 <div class="sessions">
 
-<!-- S1 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 01</div>
-      <div class="card-title">ESPALDA A<br>+ BÍCEPS</div>
-      <div class="card-tags">
-        <span class="tag back">Espalda</span>
-        <span class="tag arms">Bíceps</span>
-        <span class="tag cardio">Cardio</span>
-      </div>
-    </div>
-    <div class="badge cardio">+30 MIN</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — 10 min movilidad escapular · rotaciones de hombro · band pull-aparts x 15</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 01</div><div class="card-title">ESPALDA A + BÍCEPS</div><div class="card-tags"><span class="tag back">Espalda</span><span class="tag arms">Bíceps</span><span class="tag cardio">Cardio</span></div></div><div class="badge cardio">+30 MIN</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">10 min movilidad escapular · rotaciones de hombro · band pull-aparts x15</div></div>
   <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Jalón al pecho con barra (agarre ancho)</div><div class="ex-note">Descenso controlado 3 seg · base de la sesión</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·8</div></div></div>
-  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Remo con barra prono</div><div class="ex-note">Codo pegado · énfasis en dorsal bajo</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">12·10·10·8</div></div></div>
-  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Remo unilateral con mancuerna</div><div class="ex-note">Rango completo · rotación ligera del torso</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·10</div></div></div>
-  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Pull over en polea alta</div><div class="ex-note">Codos semiflexionados · énfasis en estiramiento del dorsal</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Face pull en polea</div><div class="ex-note">Manguito rotador + trapecio medio · no descuidar nunca</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·12</div></div></div>
-  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Curl con barra Z (EZ)</div><div class="ex-note">Sin balance de torso · codos fijos</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·10·10</div></div></div>
-  <div class="ex"><div class="ex-i">7</div><div><div class="ex-name">Curl en banco a 45° con mancuerna</div><div class="ex-note">Estiramiento máximo del bíceps · peso moderado</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="cardio-blk">
-    <div class="cardio-lbl">Cardio post-sesión · Zona 2 + progresión</div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 1 — Caminata inclinada</div><div class="cardio-detail">15 min · 6/10 · 5 km/h</div></div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 2 — Progresión</div><div class="cardio-detail">15 min · 7→9.5 km/h · +0.5 c/2.5 min</div></div>
-    <div class="cardio-sep"></div>
-    <div class="cardio-total-row"><div class="cardio-total-lbl">Distancia aprox.</div><div class="cardio-total-val">~3.25 KM</div></div>
-  </div>
+  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Remo en máquina (pecho apoyado)</div><div class="ex-note">Sin trampa de torso · retracción escapular completa</div><div class="ex-alt">Máquina dorsalera unilateral o bilateral</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">12·10·10·8</div></div></div>
+  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Pull over en polea alta</div><div class="ex-note">Codos semiflexionados · énfasis en estiramiento del dorsal</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Face pull en polea</div><div class="ex-note">Manguito rotador + trapecio medio · nunca saltear</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·12</div></div></div>
+  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Curl con barra Z (EZ)</div><div class="ex-note">Sin balance de torso · codos fijos</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·10·10</div></div></div>
+  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Curl en banco a 45° con mancuerna</div><div class="ex-note">Estiramiento máximo del bíceps · peso moderado</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="cardio-blk"><div class="cardio-lbl">Cardio post-sesión · Zona 2 + progresión</div><div class="cardio-row"><div class="cardio-ph">Fase 1 — Caminata inclinada</div><div class="cardio-detail">15 min · 6/10 · 5 km/h</div></div><div class="cardio-row"><div class="cardio-ph">Fase 2 — Progresión</div><div class="cardio-detail">15 min · 7→9.5 km/h · +0.5 c/2.5 min</div></div><div class="cardio-sep"></div><div class="cardio-total-row"><div class="cardio-total-lbl">Distancia aprox.</div><div class="cardio-total-val">~3.25 KM</div></div></div>
 </div>
 
-<!-- S2 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 02</div>
-      <div class="card-title">PECHO A<br>+ HOMBROS + TRÍCEPS</div>
-      <div class="card-tags">
-        <span class="tag chest">Pecho</span>
-        <span class="tag sh">Hombros</span>
-        <span class="tag arms">Tríceps</span>
-        <span class="tag cardio">Cardio</span>
-      </div>
-    </div>
-    <div class="badge cardio">+30 MIN</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — 2 series livianas press inclinado Smith + movilidad hombro · rotaciones externas con banda</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 02</div><div class="card-title">PECHO A + HOMBROS + TRÍCEPS</div><div class="card-tags"><span class="tag chest">Pecho</span><span class="tag sh">Hombros</span><span class="tag arms">Tríceps</span><span class="tag cardio">HIIT</span></div></div><div class="badge hiit">HIIT 20 MIN</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">2 series livianas press inclinado mancuernas · movilidad hombro · rotaciones externas con banda</div></div>
   <div class="super-note">⚡ Superseries naranja — sin descanso entre el par · 1' entre rondas</div>
-  <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Press inclinado en Smith</div><div class="ex-note">Principal compuesto · trayectoria guiada · foco en músculo</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·8</div></div></div>
-  <div class="ex ss"><div class="ex-i">2A</div><div><div class="ex-name">Press plano en máquina</div><div class="ex-note">Superserie con 2B · carga moderada-alta</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="ex ss"><div class="ex-i">2B</div><div><div class="ex-name">Cruce en polea baja</div><div class="ex-note">Reemplaza flexiones · tensión constante · peak de contracción</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Aperturas en peck deck</div><div class="ex-note">Aislamiento puro · control total</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Press militar con mancuernas (sentado)</div><div class="ex-note">Espalda apoyada · rango completo</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·10</div></div></div>
-  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Vuelos laterales con mancuerna</div><div class="ex-note">Descenso lento en todas las series · deltoides medial</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Tríceps en polea con soga</div><div class="ex-note">Apertura en el fondo · codos pegados al torso</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">7</div><div><div class="ex-name">Tríceps francés con mancuerna</div><div class="ex-note">Cabeza larga · estiramiento completo</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·10</div></div></div>
-  <div class="cardio-blk">
-    <div class="cardio-lbl">Cardio post-sesión · Zona 2 + progresión</div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 1 — Caminata inclinada</div><div class="cardio-detail">15 min · 6/10 · 5 km/h</div></div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 2 — Progresión</div><div class="cardio-detail">15 min · 7→9.5 km/h · +0.5 c/2.5 min</div></div>
-    <div class="cardio-sep"></div>
-    <div class="cardio-total-row"><div class="cardio-total-lbl">Distancia aprox.</div><div class="cardio-total-val">~3.25 KM</div></div>
-  </div>
+  <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Press inclinado con mancuernas (30°)</div><div class="ex-note">Principal compuesto · rango completo · foco en pectoral</div><div class="ex-alt">Smith inclinado si mancuernas ocupadas</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·8</div></div></div>
+  <div class="ex ss"><div class="ex-i">2A</div><div><div class="ex-name">Press plano en máquina</div><div class="ex-note">Superserie con 2B · carga moderada-alta</div><div class="ex-alt">Press plano con mancuernas</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="ex ss"><div class="ex-i">2B</div><div><div class="ex-name">Aperturas con mancuernas en banco plano</div><div class="ex-note">Estiramiento profundo · carga fija · no es ejercicio de fuerza</div><div class="ex-alt">Cruce en polea baja si disponible</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Aperturas en peck deck</div><div class="ex-note">Aislamiento puro · control total del movimiento</div><div class="ex-alt">Cruce en polea alta si peck deck ocupado</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
+  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Press militar con mancuernas (sentado)</div><div class="ex-note">Espalda apoyada · rango completo</div><div class="ex-alt">Máquina de press de hombros</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·10</div></div></div>
+  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Vuelos laterales con mancuerna</div><div class="ex-note">Descenso lento en todas · deltoides medial</div><div class="ex-alt">Vuelos laterales en polea</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
+  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Tríceps en polea con barra lambda o recta</div><div class="ex-note">Codos pegados al torso · extensión completa</div><div class="ex-alt">Soga si no hay lambda/recta</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
+  <div class="ex"><div class="ex-i">7</div><div><div class="ex-name">Tríceps francés con barra Z (EZ)</div><div class="ex-note">Cabeza larga · estiramiento completo · muñecas cómodas</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·10</div></div></div>
+  <div class="hiit-blk"><div class="hiit-lbl">HIIT post-sesión · 20 min</div><div class="hiit-row"><div class="hiit-ph">10 rondas · 1 min fuerte</div><div class="hiit-detail">10 km/h · zona 4</div></div><div class="hiit-row"><div class="hiit-ph">1 min recuperación activa</div><div class="hiit-detail">6 km/h · caminata rápida</div></div><div class="cardio-sep" style="background:#9f6fff15;margin:8px 0;"></div><div class="cardio-total-row"><div class="cardio-total-lbl" style="color:var(--purple)">Postcombustión</div><div class="cardio-total-val" style="color:var(--purple)">MÁXIMA</div></div></div>
 </div>
 
-<!-- S3 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 03</div>
-      <div class="card-title">PIERNAS A<br>CUÁDRICEPS</div>
-      <div class="card-tags">
-        <span class="tag legs">Cuádriceps</span>
-        <span class="tag legs">Aductores</span>
-        <span class="tag legs">Gemelos</span>
-      </div>
-    </div>
-    <div class="badge rest">Sin cardio</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — movilidad de cadera 10 min · sentadilla a peso corporal x 15 · activación glúteo con banda</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 03</div><div class="card-title">PIERNAS A — CUÁDRICEPS</div><div class="card-tags"><span class="tag legs">Cuádriceps</span><span class="tag legs">Aductores</span><span class="tag legs">Gemelos</span></div></div><div class="badge rest">Sin cardio</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">Movilidad de cadera 10 min · sentadilla peso corporal x15 · activación glúteo con banda</div></div>
   <div class="super-note">⚡ Superseries naranja — sin descanso entre el par · 1' entre rondas</div>
   <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Sentadilla en Smith</div><div class="ex-note">Fuerza base · descenso paralelo o más · pisada ancha</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·8</div></div></div>
-  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Prensa de piernas 45°</div><div class="ex-note">Pisada baja = cuádriceps · pisada alta = glúteo · elegí foco</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·10</div></div></div>
+  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Prensa de piernas 45°</div><div class="ex-note">Pisada baja = cuádriceps · pisada alta = glúteo</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·10</div></div></div>
   <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Sillón de cuádriceps</div><div class="ex-note">Extensión completa · pausa 1 seg arriba</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Pendular</div><div class="ex-note">Movimiento controlado · glúteo + cuádriceps · no usar inercia</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·10</div></div></div>
+  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Pendular</div><div class="ex-note">Movimiento controlado · glúteo + cuádriceps · sin inercia</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·10</div></div></div>
   <div class="ex ss"><div class="ex-i">5A</div><div><div class="ex-name">Sentadilla Sumo</div><div class="ex-note">Superserie con 5B · descenso profundo · glúteo interno y aductor</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
   <div class="ex ss"><div class="ex-i">5B</div><div><div class="ex-name">Aductores en máquina</div><div class="ex-note">Congestión final de pierna interna</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
   <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Gemelos de pie en máquina</div><div class="ex-note">Rango completo · pausa 1 seg abajo · no rebotar</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
 </div>
 
-<!-- S4 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 04</div>
-      <div class="card-title">ESPALDA B<br>+ BÍCEPS B</div>
-      <div class="card-tags">
-        <span class="tag back">Espalda</span>
-        <span class="tag arms">Bíceps</span>
-        <span class="tag cardio">Cardio</span>
-      </div>
-    </div>
-    <div class="badge cardio">+30 MIN</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — movilidad torácica 10 min · activación con banda · dislocaciones con palo</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 04</div><div class="card-title">ESPALDA B + BÍCEPS B</div><div class="card-tags"><span class="tag back">Espalda</span><span class="tag arms">Bíceps</span><span class="tag cardio">HIIT</span></div></div><div class="badge hiit">HIIT 20 MIN</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">Movilidad torácica 10 min · activación con banda · dislocaciones con palo</div></div>
   <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Jalón unilateral en polea</div><div class="ex-note">Corrige asimetrías · rango completo por lado</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">12·12·10·10</div></div></div>
-  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Remo en máquina (pecho apoyado)</div><div class="ex-note">Sin trampa de torso · retracción escapular completa</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·10</div></div></div>
-  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Remo en polea sentado (agarre neutro)</div><div class="ex-note">Control en la vuelta · no dejar que la polea te jale</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Remo en máquina (pecho apoyado)</div><div class="ex-note">Sin trampa de torso · retracción escapular completa</div><div class="ex-alt">Máquina dorsalera unilateral o bilateral</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">15·12·10·10</div></div></div>
+  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Remo en polea sentado (agarre neutro)</div><div class="ex-note">Control en la vuelta · no dejar que la polea jale</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
   <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Face pull en polea</div><div class="ex-note">Manguito + trapecio medio · rotación externa del hombro</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
   <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Curl en polea baja con soga</div><div class="ex-note">Tensión constante · supinación al llegar arriba</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
   <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Curl en banco Scott con barra Z o mancuerna</div><div class="ex-note">Elimina cualquier trampa · pico del bíceps</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="cardio-blk">
-    <div class="cardio-lbl">Cardio post-sesión · Zona 2 + progresión</div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 1 — Caminata inclinada</div><div class="cardio-detail">15 min · 6/10 · 5 km/h</div></div>
-    <div class="cardio-row"><div class="cardio-ph">Fase 2 — Progresión</div><div class="cardio-detail">15 min · 7→9.5 km/h · +0.5 c/2.5 min</div></div>
-    <div class="cardio-sep"></div>
-    <div class="cardio-total-row"><div class="cardio-total-lbl">Distancia aprox.</div><div class="cardio-total-val">~3.25 KM</div></div>
-  </div>
+  <div class="hiit-blk"><div class="hiit-lbl">HIIT post-sesión · 20 min</div><div class="hiit-row"><div class="hiit-ph">10 rondas · 1 min fuerte</div><div class="hiit-detail">10 km/h · zona 4</div></div><div class="hiit-row"><div class="hiit-ph">1 min recuperación activa</div><div class="hiit-detail">6 km/h · caminata rápida</div></div><div class="cardio-sep" style="background:#9f6fff15;margin:8px 0;"></div><div class="cardio-total-row"><div class="cardio-total-lbl" style="color:var(--purple)">Postcombustión</div><div class="cardio-total-val" style="color:var(--purple)">MÁXIMA</div></div></div>
 </div>
 
-<!-- S5 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 05</div>
-      <div class="card-title">PECHO B<br>+ HOMBROS B</div>
-      <div class="card-tags">
-        <span class="tag chest">Pecho</span>
-        <span class="tag sh">Hombros</span>
-        <span class="tag cardio">Cardio HIIT</span>
-      </div>
-    </div>
-    <div class="badge cardio">HIIT 20 MIN</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — 2 series barra vacía press plano + movilidad hombro · rotaciones externas con banda</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 05</div><div class="card-title">PECHO B + HOMBROS B</div><div class="card-tags"><span class="tag chest">Pecho</span><span class="tag sh">Hombros</span><span class="tag cardio">Cardio</span></div></div><div class="badge cardio">+30 MIN</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">2 series barra vacía press plano · movilidad hombro · rotaciones externas con banda</div></div>
   <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Press plano con barra libre</div><div class="ex-note">Fuerza base real · fresco · sin fatiga previa · 1–2 RIR</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">6·6·8·10</div></div></div>
   <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Press inclinado con barra libre (30°)</div><div class="ex-note">Porción clavicular · ángulo distinto al Día 2</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">10·10·8</div></div></div>
-  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Aperturas con mancuernas en banco plano</div><div class="ex-note">Estiramiento profundo · peso moderado · no es ejercicio de carga</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Press Arnold con mancuernas</div><div class="ex-note">Rotación completa · deltoides anterior + medial</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·10·10</div></div></div>
-  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Vuelos laterales en polea</div><div class="ex-note">Tensión constante en todo el rango · superior a mancuerna</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="hiit-blk">
-    <div class="hiit-lbl">HIIT post-sesión · 20 min · cinta o bici</div>
-    <div class="hiit-row"><div class="hiit-ph">10 rondas · 1 min fuerte</div><div class="hiit-detail">Velocidad alta · zona 4</div></div>
-    <div class="hiit-row"><div class="hiit-ph">1 min recuperación activa</div><div class="hiit-detail">Trote suave / caminata</div></div>
-    <div class="cardio-sep" style="background:#9f6fff15;margin:8px 0;"></div>
-    <div class="cardio-total-row"><div class="cardio-total-lbl" style="color:var(--purple)">Postcombustión</div><div class="cardio-total-val" style="color:var(--purple)">MÁXIMA</div></div>
-  </div>
+  <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Aperturas con mancuernas en banco plano</div><div class="ex-note">Estiramiento profundo · carga fija · no es ejercicio de fuerza</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
+  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Press Arnold con mancuernas</div><div class="ex-note">Rotación completa · deltoides anterior + medial</div><div class="ex-alt">Máquina de press de hombros</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·10·10</div></div></div>
+  <div class="ex"><div class="ex-i">5</div><div><div class="ex-name">Vuelos laterales en polea</div><div class="ex-note">Tensión constante en todo el rango</div><div class="ex-alt">Vuelos laterales con mancuerna</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
+  <div class="cardio-blk"><div class="cardio-lbl">Cardio post-sesión · Zona 2 + progresión</div><div class="cardio-row"><div class="cardio-ph">Fase 1 — Caminata inclinada</div><div class="cardio-detail">15 min · 6/10 · 5 km/h</div></div><div class="cardio-row"><div class="cardio-ph">Fase 2 — Progresión</div><div class="cardio-detail">15 min · 7→9.5 km/h · +0.5 c/2.5 min</div></div><div class="cardio-sep"></div><div class="cardio-total-row"><div class="cardio-total-lbl">Distancia aprox.</div><div class="cardio-total-val">~3.25 KM</div></div></div>
 </div>
 
-<!-- S6 -->
 <div class="card">
-  <div class="card-head">
-    <div>
-      <div class="card-num">Sesión 06</div>
-      <div class="card-title">PIERNAS B<br>ISQUIOS + GLÚTEOS</div>
-      <div class="card-tags">
-        <span class="tag legs">Isquios</span>
-        <span class="tag legs">Glúteos</span>
-        <span class="tag legs">Gemelos</span>
-      </div>
-    </div>
-    <div class="badge rest">Sin cardio</div>
-  </div>
-  <div class="warmup">
-    <div class="warmup-dot"></div>
-    <div class="warmup-txt">Calentamiento — 10 min · activación glúteo medio con banda · peso muerto barra vacía x 10 · hip hinge con palo</div>
-  </div>
+  <div class="card-head"><div><div class="card-num">Sesión 06</div><div class="card-title">PIERNAS B — ISQUIOS + GLÚTEOS</div><div class="card-tags"><span class="tag legs">Isquios</span><span class="tag legs">Glúteos</span><span class="tag legs">Gemelos</span></div></div><div class="badge rest">Sin cardio</div></div>
+  <div class="warmup"><div class="warmup-dot"></div><div class="warmup-txt">Activación glúteo medio con banda · peso muerto barra vacía x10 · hip hinge con palo</div></div>
   <div class="super-note">⚡ Superseries naranja — sin descanso entre el par · 1' entre rondas</div>
   <div class="ex"><div class="ex-i">1</div><div><div class="ex-name">Peso muerto convencional</div><div class="ex-note">Rey de la sesión · cadena posterior completa · técnica antes que carga</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">8·8·8·8</div></div></div>
   <div class="ex"><div class="ex-i">2</div><div><div class="ex-name">Camilla femoral acostado</div><div class="ex-note">Flexión completa · descenso controlado 3 seg</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·12·10</div></div></div>
   <div class="ex"><div class="ex-i">3</div><div><div class="ex-name">Curl de isquios de pie unilateral</div><div class="ex-note">Corrige asimetrías · énfasis en cabeza corta del bíceps femoral</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">12·12·12</div></div></div>
-  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Hip thrust con barra o máquina</div><div class="ex-note">Glúteo máximo · extensión completa de cadera · pausa arriba</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">12·10·10·8</div></div></div>
+  <div class="ex"><div class="ex-i">4</div><div><div class="ex-name">Hip thrust con barra o máquina</div><div class="ex-note">Glúteo máximo · extensión completa · pausa arriba</div></div><div class="ex-scheme"><div class="ex-sets">4</div><div class="ex-reps">12·10·10·8</div></div></div>
   <div class="ex ss"><div class="ex-i">5A</div><div><div class="ex-name">Sentadilla Sumo</div><div class="ex-note">Superserie con 5B · descenso profundo · glúteo interno</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
   <div class="ex ss"><div class="ex-i">5B</div><div><div class="ex-name">Aductores en máquina</div><div class="ex-note">Congestión final pierna interna</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
-  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Gemelos sentado en máquina</div><div class="ex-note">Sóleo · distinto al gemelo de pie del Día 3 · rango completo</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
+  <div class="ex"><div class="ex-i">6</div><div><div class="ex-name">Gemelos sentado en máquina</div><div class="ex-note">Sóleo · distinto al gemelo de pie del Día 3</div></div><div class="ex-scheme"><div class="ex-sets">3</div><div class="ex-reps">15·15·15</div></div></div>
 </div>
 
-</div><!-- /sessions -->
-
+</div>
 <div class="sec-head"><div class="sec-head-txt">Principios del plan</div><div class="sec-head-line"></div></div>
-<div class="principles" style="padding:0;">
-  <div class="principle"><div class="principle-icon">🎯</div><div class="principle-title">Conservar músculo primero</div><div class="principle-txt">Con 77 kg de músculo y déficit sostenido, la prioridad es retener ese tejido. Terminá cada serie a 1–2 reps del fallo (RIR 1–2). El fallo en déficit acumula fatiga que no podés recuperar.</div></div>
-  <div class="principle"><div class="principle-icon">📈</div><div class="principle-title">Progresión doble</div><div class="principle-txt">Cuando llegás al límite superior del rango con buena técnica en todas las series, subís carga la semana siguiente. Registrá todo en el Tracker. Es el único indicador de progreso real.</div></div>
-  <div class="principle"><div class="principle-icon">⏱️</div><div class="principle-title">Pausa entre series</div><div class="principle-txt">1 min para aislamiento. 90 seg para compuestos medianos. 2–2.5 min para compuestos pesados (press barra, peso muerto, sentadilla). Las pausas cortas en compuestos reducen la carga real que podés mover.</div></div>
-  <div class="principle"><div class="principle-icon">🔥</div><div class="principle-title">Cardio inteligente</div><div class="principle-txt">Días 1, 2, 4: zona 2 (caminata inclinada) + progresión. Día 5: HIIT 20 min (10×1' fuerte / 1' suave). Nunca antes del entreno. Los días de pierna no hay cardio — la sesión ya es suficiente estímulo.</div></div>
-  <div class="principle"><div class="principle-icon">💪</div><div class="principle-title">Pecho: frecuencia 2 real</div><div class="principle-txt">Sesión 2 (Smith inclinado + máquina plano + cruce): énfasis en hipertrofia y aislamiento. Sesión 5 (barra plana pesado + barra inclinada libre): énfasis en fuerza base. Estímulos distintos, no duplicados.</div></div>
-  <div class="principle"><div class="principle-icon">🛡️</div><div class="principle-title">Face pull: siempre presente</div><div class="principle-txt">Con tanto volumen de empuje, el manguito rotador necesita trabajo de rotación externa. El face pull en ambas sesiones de espalda equilibra la salud del hombro a largo plazo. No es opcional.</div></div>
+<div class="principles">
+  <div class="principle"><div class="principle-icon">🎯</div><div class="principle-title">Conservar músculo primero</div><div class="principle-txt">Con 77 kg de músculo y déficit sostenido, terminá cada serie a 1–2 reps del fallo (RIR 1–2). El fallo en déficit acumula fatiga que no podés recuperar.</div></div>
+  <div class="principle"><div class="principle-icon">📈</div><div class="principle-title">Progresión doble</div><div class="principle-txt">Cuando llegás al límite superior del rango con buena técnica en todas las series, subís carga la semana siguiente. Registrá todo en el Tracker.</div></div>
+  <div class="principle"><div class="principle-icon">⏱️</div><div class="principle-title">Pausa entre series</div><div class="principle-txt">1 min para aislamiento. 90 seg para compuestos medianos. 2–2.5 min para press barra, peso muerto y sentadilla.</div></div>
+  <div class="principle"><div class="principle-icon">🔥</div><div class="principle-title">Cardio inteligente</div><div class="principle-txt">Días 2 y 4: HIIT 20 min (10×1' a 10km/h / 1' a 6km/h). Días 1 y 5: zona 2 caminata inclinada + progresión. Días de pierna: sin cardio.</div></div>
+  <div class="principle"><div class="principle-icon">💪</div><div class="principle-title">Pecho: frecuencia 2 real</div><div class="principle-txt">Sesión 2 (mancuernas inclinadas + máquina plano): hipertrofia. Sesión 5 (barra plana pesado + barra inclinada): fuerza base. Estímulos distintos.</div></div>
+  <div class="principle"><div class="principle-icon">🛡️</div><div class="principle-title">Face pull: siempre presente</div><div class="principle-txt">Con tanto volumen de empuje, el face pull en ambas sesiones de espalda equilibra la salud del hombro a largo plazo. No es opcional.</div></div>
+</div>
 </div>
 
-</div><!-- /view-plan -->
-
-
-<!-- ══════════════════════════════════════ TRACKER VIEW ══════════════════════════════════════ -->
-<div id="view-tracker" class="view">
-
+<div id="view-tracker" class="view active">
 <div class="tracker-hero">
   <div class="tracker-title">TRACKER DE <span>CARGAS</span></div>
-  <div class="tracker-sub">Registrá tu carga por ejercicio · semana a semana · los datos se guardan en este archivo</div>
+  <div class="tracker-sub">Registrá tu carga · semana a semana · tocá Guardar para conservar los datos</div>
 </div>
-
-<div id="progress-summary" class="progress-grid" style="display:none;">
-  <!-- filled by JS -->
-</div>
-
+<div id="progress-summary" class="progress-grid" style="display:none;"></div>
 <div class="week-selector">
   <div class="week-label">Semana</div>
-  <div class="week-tabs" id="week-tabs"></div>
+  <div class="week-tabs" id="week-tabs"><button class="week-tab active">Semana 1</button></div>
   <button class="add-week-btn" onclick="addWeek()">+ Nueva semana</button>
 </div>
-
-<div class="tracker-sessions" id="tracker-sessions"></div>
-
+<div class="tracker-sessions" id="tracker-sessions"><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S01 · Espalda A + Bíceps</div><div class="tracker-toggle">CERRAR ▴</div></div><div class="tracker-body open"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Jalón al pecho con barra</div><div class="tracker-ex-scheme-t">4×15·12·10·8</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e1_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Remo máquina pecho apoyado</div><div class="tracker-ex-scheme-t">4×12·10·10·8</div><div class="tracker-ex-alt-t">Dorsalera unilateral/bilateral</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Pull over en polea alta</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Face pull en polea</div><div class="tracker-ex-scheme-t">3×15·12·12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Curl con barra Z (EZ)</div><div class="tracker-ex-scheme-t">3×12·10·10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Curl banco 45° mancuerna</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_6" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_6" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_6" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e1_6" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s1_notes" oninput="updateNotes(this)"></textarea></div></div></div><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S02 · Pecho A + Hombros + Tríceps</div><div class="tracker-toggle">CERRAR ▴</div></div><div class="tracker-body open"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press inclinado mancuernas (30°)</div><div class="tracker-ex-scheme-t">4×15·12·10·8</div><div class="tracker-ex-alt-t">Smith inclinado</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press plano en máquina (SS)</div><div class="tracker-ex-scheme-t">3×12</div><div class="tracker-ex-alt-t">Press plano mancuernas</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input" placeholder="kg" value="" data-ex="e2_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Aperturas mancuernas banco plano (SS)</div><div class="tracker-ex-scheme-t">3×12</div><div class="tracker-ex-alt-t">Cruce polea baja</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input" placeholder="kg" value="" data-ex="e2_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Aperturas en peck deck</div><div class="tracker-ex-scheme-t">3×15</div><div class="tracker-ex-alt-t">Cruce polea alta</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press militar mancuernas</div><div class="tracker-ex-scheme-t">3×15·12·10</div><div class="tracker-ex-alt-t">Máquina press hombros</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Vuelos laterales mancuerna</div><div class="tracker-ex-scheme-t">3×15</div><div class="tracker-ex-alt-t">Vuelos laterales polea</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_6" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_6" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_6" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_6" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Tríceps polea lambda/recta</div><div class="tracker-ex-scheme-t">3×15</div><div class="tracker-ex-alt-t">Soga</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_7" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_7" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_7" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_7" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Tríceps francés barra Z</div><div class="tracker-ex-scheme-t">3×10</div></div><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_8" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_8" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input filled" placeholder="kg" value="" data-ex="e2_8" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e2_8" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s2_notes" oninput="updateNotes(this)"></textarea></div></div></div><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S03 · Piernas A — Cuádriceps</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div></div><div class="tracker-body"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Sentadilla en Smith</div><div class="tracker-ex-scheme-t">4×15·12·10·8</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Prensa de piernas 45°</div><div class="tracker-ex-scheme-t">3×15·12·10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Sillón de cuádriceps</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Pendular</div><div class="tracker-ex-scheme-t">3×10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Sentadilla Sumo (SS)</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Aductores en máquina (SS)</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_6" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_6" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_6" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_6" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Gemelos de pie en máquina</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_7" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_7" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_7" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e3_7" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s3_notes" oninput="updateNotes(this)"></textarea></div></div></div><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S04 · Espalda B + Bíceps B</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div></div><div class="tracker-body"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Jalón unilateral en polea</div><div class="tracker-ex-scheme-t">4×12·12·10·10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Remo máquina pecho apoyado</div><div class="tracker-ex-scheme-t">4×15·12·10·10</div><div class="tracker-ex-alt-t">Dorsalera unilateral/bilateral</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Remo polea sentado agarre neutro</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Face pull en polea</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Curl polea baja con soga</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Curl banco Scott barra Z o mancuerna</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_6" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_6" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_6" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e4_6" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s4_notes" oninput="updateNotes(this)"></textarea></div></div></div><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S05 · Pecho B + Hombros B</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div></div><div class="tracker-body"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press plano con barra libre</div><div class="tracker-ex-scheme-t">4×6·6·8·10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press inclinado barra libre (30°)</div><div class="tracker-ex-scheme-t">3×10·10·8</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Aperturas mancuernas banco plano</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Press Arnold mancuernas</div><div class="tracker-ex-scheme-t">3×12·10·10</div><div class="tracker-ex-alt-t">Máquina press hombros</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Vuelos laterales en polea</div><div class="tracker-ex-scheme-t">3×15</div><div class="tracker-ex-alt-t">Vuelos laterales mancuerna</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e5_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s5_notes" oninput="updateNotes(this)"></textarea></div></div></div><div class="tracker-card"><div class="tracker-card-head"><div class="tracker-card-title">S06 · Piernas B — Isquios + Glúteos</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div></div><div class="tracker-body"><div class="tracker-ex-row header-row"><div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Peso muerto convencional</div><div class="tracker-ex-scheme-t">4×8</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_1" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_1" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_1" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_1" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Camilla femoral acostado</div><div class="tracker-ex-scheme-t">3×15·12·10</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_2" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_2" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_2" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_2" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Curl isquios pie unilateral</div><div class="tracker-ex-scheme-t">3×12</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_3" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_3" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_3" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_3" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Hip thrust barra o máquina</div><div class="tracker-ex-scheme-t">4×12·10·10·8</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_4" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_4" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_4" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_4" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Sentadilla Sumo (SS)</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_5" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_5" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_5" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_5" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Aductores en máquina (SS)</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_6" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_6" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_6" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_6" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-ex-row"><div><div class="tracker-ex-name-t">Gemelos sentado en máquina</div><div class="tracker-ex-scheme-t">3×15</div></div><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_7" data-s="s1" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_7" data-s="s2" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_7" data-s="s3" oninput="updateLoad(this)" min="0" step="0.5"><input type="number" class="load-input " placeholder="kg" value="" data-ex="e6_7" data-s="s4" oninput="updateLoad(this)" min="0" step="0.5"></div><div class="tracker-notes-row"><div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="s6_notes" oninput="updateNotes(this)"></textarea></div></div></div></div>
 <div class="action-bar">
   <button class="btn btn-primary" onclick="saveData()">💾 Guardar datos</button>
   <button class="btn btn-secondary" onclick="exportJSON()">↓ Exportar backup</button>
@@ -953,341 +289,27 @@ body {
   <button class="btn btn-danger" onclick="confirmClear()">Borrar semana actual</button>
 </div>
 <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
-
-</div><!-- /view-tracker -->
-
+</div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────
-const SESSIONS = [
-  {
-    id: 's1', title: 'S01 · Espalda A + Bíceps',
-    exercises: [
-      { id: 'e1_1', name: 'Jalón al pecho con barra', scheme: '4 × 15·12·10·8' },
-      { id: 'e1_2', name: 'Remo con barra prono', scheme: '4 × 12·10·10·8' },
-      { id: 'e1_3', name: 'Remo unilateral con mancuerna', scheme: '3 × 10' },
-      { id: 'e1_4', name: 'Pull over en polea alta', scheme: '3 × 12' },
-      { id: 'e1_5', name: 'Face pull en polea', scheme: '3 × 15·12·12' },
-      { id: 'e1_6', name: 'Curl con barra Z (EZ)', scheme: '3 × 12·10·10' },
-      { id: 'e1_7', name: 'Curl en banco 45° mancuerna', scheme: '3 × 12' },
-    ]
-  },
-  {
-    id: 's2', title: 'S02 · Pecho A + Hombros + Tríceps',
-    exercises: [
-      { id: 'e2_1', name: 'Press inclinado en Smith', scheme: '4 × 15·12·10·8' },
-      { id: 'e2_2', name: 'Press plano en máquina', scheme: '3 × 12 (SS)' },
-      { id: 'e2_3', name: 'Cruce en polea baja', scheme: '3 × 15 (SS)' },
-      { id: 'e2_4', name: 'Aperturas en peck deck', scheme: '3 × 15' },
-      { id: 'e2_5', name: 'Press militar con mancuernas', scheme: '3 × 15·12·10' },
-      { id: 'e2_6', name: 'Vuelos laterales mancuerna', scheme: '3 × 15' },
-      { id: 'e2_7', name: 'Tríceps en polea con soga', scheme: '3 × 15' },
-      { id: 'e2_8', name: 'Tríceps francés con mancuerna', scheme: '3 × 10' },
-    ]
-  },
-  {
-    id: 's3', title: 'S03 · Piernas A — Cuádriceps',
-    exercises: [
-      { id: 'e3_1', name: 'Sentadilla en Smith', scheme: '4 × 15·12·10·8' },
-      { id: 'e3_2', name: 'Prensa de piernas 45°', scheme: '3 × 15·12·10' },
-      { id: 'e3_3', name: 'Sillón de cuádriceps', scheme: '3 × 15' },
-      { id: 'e3_4', name: 'Pendular', scheme: '3 × 10' },
-      { id: 'e3_5', name: 'Sentadilla Sumo', scheme: '3 × 15 (SS)' },
-      { id: 'e3_6', name: 'Aductores en máquina', scheme: '3 × 15 (SS)' },
-      { id: 'e3_7', name: 'Gemelos de pie en máquina', scheme: '3 × 15' },
-    ]
-  },
-  {
-    id: 's4', title: 'S04 · Espalda B + Bíceps B',
-    exercises: [
-      { id: 'e4_1', name: 'Jalón unilateral en polea', scheme: '4 × 12·12·10·10' },
-      { id: 'e4_2', name: 'Remo en máquina (pecho apoyado)', scheme: '4 × 15·12·10·10' },
-      { id: 'e4_3', name: 'Remo en polea sentado (agarre neutro)', scheme: '3 × 12' },
-      { id: 'e4_4', name: 'Face pull en polea', scheme: '3 × 15' },
-      { id: 'e4_5', name: 'Curl en polea baja con soga', scheme: '3 × 15' },
-      { id: 'e4_6', name: 'Curl banco Scott (barra Z o mancuerna)', scheme: '3 × 12' },
-    ]
-  },
-  {
-    id: 's5', title: 'S05 · Pecho B + Hombros B',
-    exercises: [
-      { id: 'e5_1', name: 'Press plano con barra libre', scheme: '4 × 6·6·8·10' },
-      { id: 'e5_2', name: 'Press inclinado con barra libre (30°)', scheme: '3 × 10·10·8' },
-      { id: 'e5_3', name: 'Aperturas con mancuernas banco plano', scheme: '3 × 12' },
-      { id: 'e5_4', name: 'Press Arnold con mancuernas', scheme: '3 × 12·10·10' },
-      { id: 'e5_5', name: 'Vuelos laterales en polea', scheme: '3 × 15' },
-    ]
-  },
-  {
-    id: 's6', title: 'S06 · Piernas B — Isquios + Glúteos',
-    exercises: [
-      { id: 'e6_1', name: 'Peso muerto convencional', scheme: '4 × 8' },
-      { id: 'e6_2', name: 'Camilla femoral acostado', scheme: '3 × 15·12·10' },
-      { id: 'e6_3', name: 'Curl de isquios de pie unilateral', scheme: '3 × 12' },
-      { id: 'e6_4', name: 'Hip thrust con barra o máquina', scheme: '4 × 12·10·10·8' },
-      { id: 'e6_5', name: 'Sentadilla Sumo', scheme: '3 × 15 (SS)' },
-      { id: 'e6_6', name: 'Aductores en máquina', scheme: '3 × 15 (SS)' },
-      { id: 'e6_7', name: 'Gemelos sentado en máquina', scheme: '3 × 15' },
-    ]
-  }
-];
-
-// In-memory store: { weekKey: { exId: { s1: '20', s2: '22', s3: '22', s4: '22', notes: '' } } }
-let store = {};
-let currentWeek = 'S1';
-let weeks = ['S1'];
-
-function weekKey(w) { return w; }
-
-// ── VIEW SWITCHING ─────────────────────────────────────
-function showView(v) {
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  event.target.classList.add('active');
-  if (v === 'tracker') renderTracker();
-}
-
-// ── WEEK MANAGEMENT ────────────────────────────────────
-function renderWeekTabs() {
-  const container = document.getElementById('week-tabs');
-  container.innerHTML = '';
-  weeks.forEach(w => {
-    const btn = document.createElement('button');
-    btn.className = 'week-tab' + (w === currentWeek ? ' active' : '');
-    btn.textContent = 'Semana ' + w.replace('S','');
-    btn.onclick = () => { currentWeek = w; renderTracker(); };
-    container.appendChild(btn);
-  });
-}
-
-function addWeek() {
-  const next = 'S' + (weeks.length + 1);
-  weeks.push(next);
-  currentWeek = next;
-  renderTracker();
-}
-
-// ── RENDER TRACKER ─────────────────────────────────────
-function renderTracker() {
-  renderWeekTabs();
-  renderProgress();
-  const container = document.getElementById('tracker-sessions');
-  container.innerHTML = '';
-
-  SESSIONS.forEach(session => {
-    const card = document.createElement('div');
-    card.className = 'tracker-card';
-
-    const head = document.createElement('div');
-    head.className = 'tracker-card-head';
-    head.innerHTML = `<div class="tracker-card-title">${session.title}</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div>`;
-
-    const body = document.createElement('div');
-    body.className = 'tracker-body';
-
-    head.onclick = () => {
-      body.classList.toggle('open');
-      head.querySelector('.tracker-toggle').textContent = body.classList.contains('open') ? 'CERRAR ▴' : 'TAP PARA EXPANDIR ▾';
-    };
-
-    // Header row
-    const headerRow = document.createElement('div');
-    headerRow.className = 'tracker-ex-row header-row';
-    headerRow.innerHTML = `
-      <div class="tracker-col-head">Ejercicio</div>
-      <div class="tracker-col-head">Serie 1</div>
-      <div class="tracker-col-head">Serie 2</div>
-      <div class="tracker-col-head">Serie 3</div>
-      <div class="tracker-col-head">Serie 4</div>
-    `;
-    body.appendChild(headerRow);
-
-    session.exercises.forEach(ex => {
-      const wk = weekKey(currentWeek);
-      if (!store[wk]) store[wk] = {};
-      if (!store[wk][ex.id]) store[wk][ex.id] = { s1:'', s2:'', s3:'', s4:'', notes:'' };
-      const d = store[wk][ex.id];
-
-      const row = document.createElement('div');
-      row.className = 'tracker-ex-row';
-      row.innerHTML = `
-        <div>
-          <div class="tracker-ex-name-t">${ex.name}</div>
-          <div class="tracker-ex-scheme-t">${ex.scheme}</div>
-        </div>
-        ${[1,2,3,4].map(i => `
-          <input type="number" class="load-input ${d['s'+i] ? 'filled' : ''}"
-            placeholder="kg"
-            value="${d['s'+i]}"
-            data-ex="${ex.id}" data-s="s${i}"
-            onchange="updateLoad(this)"
-            oninput="updateLoad(this)"
-            min="0" step="0.5">`).join('')}
-      `;
-      body.appendChild(row);
-    });
-
-    // Notes
-    const wk = weekKey(currentWeek);
-    if (!store[wk]) store[wk] = {};
-    const noteKey = session.id + '_notes';
-    if (!store[wk][noteKey]) store[wk][noteKey] = '';
-
-    const notesRow = document.createElement('div');
-    notesRow.className = 'tracker-notes-row';
-    notesRow.innerHTML = `
-      <div class="notes-label">Notas de la sesión</div>
-      <textarea class="notes-input" placeholder="Cómo te sentiste, qué subir la próxima, lesiones, observaciones..."
-        data-notekey="${noteKey}"
-        onchange="updateNotes(this)">${store[wk][noteKey]}</textarea>
-    `;
-    body.appendChild(notesRow);
-
-    card.appendChild(head);
-    card.appendChild(body);
-    container.appendChild(card);
-  });
-}
-
-function updateLoad(input) {
-  const wk = weekKey(currentWeek);
-  if (!store[wk]) store[wk] = {};
-  const exId = input.dataset.ex;
-  const s = input.dataset.s;
-  if (!store[wk][exId]) store[wk][exId] = { s1:'', s2:'', s3:'', s4:'', notes:'' };
-  store[wk][exId][s] = input.value;
-  input.classList.toggle('filled', !!input.value);
-}
-
-function updateNotes(ta) {
-  const wk = weekKey(currentWeek);
-  if (!store[wk]) store[wk] = {};
-  store[wk][ta.dataset.notekey] = ta.value;
-}
-
-// ── PROGRESS SUMMARY ──────────────────────────────────
-function renderProgress() {
-  const totalEntries = Object.values(store).reduce((acc, wk) => {
-    return acc + Object.values(wk).filter(v => typeof v === 'object' && (v.s1 || v.s2 || v.s3 || v.s4)).length;
-  }, 0);
-
-  const summary = document.getElementById('progress-summary');
-  if (totalEntries === 0) { summary.style.display = 'none'; return; }
-  summary.style.display = 'grid';
-
-  summary.innerHTML = `
-    <div class="progress-card">
-      <div class="progress-card-label">Semanas registradas</div>
-      <div class="progress-card-val">${weeks.length}</div>
-      <div class="progress-card-sub">de entrenamiento</div>
-    </div>
-    <div class="progress-card">
-      <div class="progress-card-label">Sets registrados</div>
-      <div class="progress-card-val">${totalEntries * 4}</div>
-      <div class="progress-card-sub">en total</div>
-    </div>
-    <div class="progress-card">
-      <div class="progress-card-label">Ejercicios trackeados</div>
-      <div class="progress-card-val">${totalEntries}</div>
-      <div class="progress-card-sub">con carga registrada</div>
-    </div>
-  `;
-}
-
-// ── SAVE / EXPORT / IMPORT ─────────────────────────────
-function saveData() {
-  // Encode data into the URL hash (survives page reload as long as URL is kept)
-  // For offline HTML: embed into a hidden element and let user re-save the file
-  const payload = JSON.stringify({ store, weeks });
-  const encoded = btoa(unescape(encodeURIComponent(payload)));
-  document.getElementById('__data__').value = encoded;
-
-  // Also trigger file download with embedded data
-  bakeAndDownload();
-}
-
-function showSaveStatus() {
-  const el = document.getElementById('save-status');
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-function bakeAndDownload() {
-  // Re-generate this HTML file with data embedded
-  const payload = JSON.stringify({ store, weeks });
-  const encoded = btoa(unescape(encodeURIComponent(payload)));
-
-  const src = document.documentElement.outerHTML;
-  const patched = src.replace(/id="__data__" value="[^"]*"/, `id="__data__" value="${encoded}"`);
-
-  const blob = new Blob([patched], { type: 'text/html' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'plan-jonathan-v2.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showSaveStatus();
-}
-
-function exportJSON() {
-  const payload = JSON.stringify({ store, weeks }, null, 2);
-  const blob = new Blob([payload], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'cargas-jonathan.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function importJSON() {
-  document.getElementById('import-file').click();
-}
-
-function handleImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      store = data.store || {};
-      weeks = data.weeks || ['S1'];
-      currentWeek = weeks[weeks.length - 1];
-      renderTracker();
-      showSaveStatus();
-    } catch(err) {
-      alert('Error al importar: archivo inválido.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function confirmClear() {
-  if (confirm('¿Borrar todos los datos de la semana ' + currentWeek + '?')) {
-    const wk = weekKey(currentWeek);
-    delete store[wk];
-    renderTracker();
-  }
-}
-
-// ── INIT ──────────────────────────────────────────────
-window.onload = () => {
-  const raw = document.getElementById('__data__').value;
-  if (raw) {
-    try {
-      const data = JSON.parse(decodeURIComponent(escape(atob(raw))));
-      store = data.store || {};
-      weeks = data.weeks || ['S1'];
-      currentWeek = weeks[weeks.length - 1];
-    } catch(e) {}
-  }
-  renderWeekTabs();
-};
+const SESSIONS=[{id:'s1',title:'S01 · Espalda A + Bíceps',exercises:[{id:'e1_1',name:'Jalón al pecho con barra',alt:'',scheme:'4×15·12·10·8'},{id:'e1_2',name:'Remo máquina pecho apoyado',alt:'Dorsalera unilateral/bilateral',scheme:'4×12·10·10·8'},{id:'e1_3',name:'Pull over en polea alta',alt:'',scheme:'3×12'},{id:'e1_4',name:'Face pull en polea',alt:'',scheme:'3×15·12·12'},{id:'e1_5',name:'Curl con barra Z (EZ)',alt:'',scheme:'3×12·10·10'},{id:'e1_6',name:'Curl banco 45° mancuerna',alt:'',scheme:'3×12'}]},{id:'s2',title:'S02 · Pecho A + Hombros + Tríceps',exercises:[{id:'e2_1',name:'Press inclinado mancuernas (30°)',alt:'Smith inclinado',scheme:'4×15·12·10·8'},{id:'e2_2',name:'Press plano en máquina (SS)',alt:'Press plano mancuernas',scheme:'3×12'},{id:'e2_3',name:'Aperturas mancuernas banco plano (SS)',alt:'Cruce polea baja',scheme:'3×12'},{id:'e2_4',name:'Aperturas en peck deck',alt:'Cruce polea alta',scheme:'3×15'},{id:'e2_5',name:'Press militar mancuernas',alt:'Máquina press hombros',scheme:'3×15·12·10'},{id:'e2_6',name:'Vuelos laterales mancuerna',alt:'Vuelos laterales polea',scheme:'3×15'},{id:'e2_7',name:'Tríceps polea lambda/recta',alt:'Soga',scheme:'3×15'},{id:'e2_8',name:'Tríceps francés barra Z',alt:'',scheme:'3×10'}]},{id:'s3',title:'S03 · Piernas A — Cuádriceps',exercises:[{id:'e3_1',name:'Sentadilla en Smith',alt:'',scheme:'4×15·12·10·8'},{id:'e3_2',name:'Prensa de piernas 45°',alt:'',scheme:'3×15·12·10'},{id:'e3_3',name:'Sillón de cuádriceps',alt:'',scheme:'3×15'},{id:'e3_4',name:'Pendular',alt:'',scheme:'3×10'},{id:'e3_5',name:'Sentadilla Sumo (SS)',alt:'',scheme:'3×15'},{id:'e3_6',name:'Aductores en máquina (SS)',alt:'',scheme:'3×15'},{id:'e3_7',name:'Gemelos de pie en máquina',alt:'',scheme:'3×15'}]},{id:'s4',title:'S04 · Espalda B + Bíceps B',exercises:[{id:'e4_1',name:'Jalón unilateral en polea',alt:'',scheme:'4×12·12·10·10'},{id:'e4_2',name:'Remo máquina pecho apoyado',alt:'Dorsalera unilateral/bilateral',scheme:'4×15·12·10·10'},{id:'e4_3',name:'Remo polea sentado agarre neutro',alt:'',scheme:'3×12'},{id:'e4_4',name:'Face pull en polea',alt:'',scheme:'3×15'},{id:'e4_5',name:'Curl polea baja con soga',alt:'',scheme:'3×15'},{id:'e4_6',name:'Curl banco Scott barra Z o mancuerna',alt:'',scheme:'3×12'}]},{id:'s5',title:'S05 · Pecho B + Hombros B',exercises:[{id:'e5_1',name:'Press plano con barra libre',alt:'',scheme:'4×6·6·8·10'},{id:'e5_2',name:'Press inclinado barra libre (30°)',alt:'',scheme:'3×10·10·8'},{id:'e5_3',name:'Aperturas mancuernas banco plano',alt:'',scheme:'3×12'},{id:'e5_4',name:'Press Arnold mancuernas',alt:'Máquina press hombros',scheme:'3×12·10·10'},{id:'e5_5',name:'Vuelos laterales en polea',alt:'Vuelos laterales mancuerna',scheme:'3×15'}]},{id:'s6',title:'S06 · Piernas B — Isquios + Glúteos',exercises:[{id:'e6_1',name:'Peso muerto convencional',alt:'',scheme:'4×8'},{id:'e6_2',name:'Camilla femoral acostado',alt:'',scheme:'3×15·12·10'},{id:'e6_3',name:'Curl isquios pie unilateral',alt:'',scheme:'3×12'},{id:'e6_4',name:'Hip thrust barra o máquina',alt:'',scheme:'4×12·10·10·8'},{id:'e6_5',name:'Sentadilla Sumo (SS)',alt:'',scheme:'3×15'},{id:'e6_6',name:'Aductores en máquina (SS)',alt:'',scheme:'3×15'},{id:'e6_7',name:'Gemelos sentado en máquina',alt:'',scheme:'3×15'}]}];
+let store={},currentWeek='S1',weeks=['S1'];
+function showView(v,btn){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-'+v).classList.add('active');if(btn)btn.classList.add('active');if(v==='tracker')renderTracker();}
+function renderWeekTabs(){const c=document.getElementById('week-tabs');c.innerHTML='';weeks.forEach(w=>{const btn=document.createElement('button');btn.className='week-tab'+(w===currentWeek?' active':'');btn.textContent='Semana '+w.replace('S','');btn.onclick=()=>{currentWeek=w;renderTracker();};c.appendChild(btn);});}
+function addWeek(){const next='S'+(weeks.length+1);weeks.push(next);currentWeek=next;renderTracker();}
+function renderTracker(){renderWeekTabs();renderProgress();const container=document.getElementById('tracker-sessions');container.innerHTML='';SESSIONS.forEach(session=>{const card=document.createElement('div');card.className='tracker-card';const head=document.createElement('div');head.className='tracker-card-head';head.innerHTML=`<div class="tracker-card-title">${session.title}</div><div class="tracker-toggle">TAP PARA EXPANDIR ▾</div>`;const body=document.createElement('div');body.className='tracker-body';head.onclick=()=>{body.classList.toggle('open');head.querySelector('.tracker-toggle').textContent=body.classList.contains('open')?'CERRAR ▴':'TAP PARA EXPANDIR ▾';};const hrow=document.createElement('div');hrow.className='tracker-ex-row header-row';hrow.innerHTML=`<div class="tracker-col-head">Ejercicio</div><div class="tracker-col-head">Serie 1</div><div class="tracker-col-head">Serie 2</div><div class="tracker-col-head">Serie 3</div><div class="tracker-col-head">Serie 4</div>`;body.appendChild(hrow);session.exercises.forEach(ex=>{const wk=currentWeek;if(!store[wk])store[wk]={};if(!store[wk][ex.id])store[wk][ex.id]={s1:'',s2:'',s3:'',s4:''};const d=store[wk][ex.id];const row=document.createElement('div');row.className='tracker-ex-row';row.innerHTML=`<div><div class="tracker-ex-name-t">${ex.name}</div><div class="tracker-ex-scheme-t">${ex.scheme}</div>${ex.alt?`<div class="tracker-ex-alt-t">${ex.alt}</div>`:''}</div>${[1,2,3,4].map(i=>`<input type="number" class="load-input ${d['s'+i]?'filled':''}" placeholder="kg" value="${d['s'+i]}" data-ex="${ex.id}" data-s="s${i}" oninput="updateLoad(this)" min="0" step="0.5">`).join('')}`;body.appendChild(row);});const wk=currentWeek;if(!store[wk])store[wk]={};const nk=session.id+'_notes';if(!store[wk][nk])store[wk][nk]='';const nrow=document.createElement('div');nrow.className='tracker-notes-row';nrow.innerHTML=`<div class="notes-label">Notas de la sesión</div><textarea class="notes-input" placeholder="Cómo te sentiste, qué subir, observaciones..." data-notekey="${nk}" oninput="updateNotes(this)">${store[wk][nk]}</textarea>`;body.appendChild(nrow);card.appendChild(head);card.appendChild(body);container.appendChild(card);});}
+function updateLoad(input){const wk=currentWeek;if(!store[wk])store[wk]={};const ex=input.dataset.ex,s=input.dataset.s;if(!store[wk][ex])store[wk][ex]={s1:'',s2:'',s3:'',s4:''};store[wk][ex][s]=input.value;input.classList.toggle('filled',!!input.value);}
+function updateNotes(ta){const wk=currentWeek;if(!store[wk])store[wk]={};store[wk][ta.dataset.notekey]=ta.value;}
+function renderProgress(){const total=Object.values(store).reduce((acc,wk)=>acc+Object.values(wk).filter(v=>typeof v==='object'&&(v.s1||v.s2||v.s3||v.s4)).length,0);const summary=document.getElementById('progress-summary');if(total===0){summary.style.display='none';return;}summary.style.display='grid';summary.innerHTML=`<div class="progress-card"><div class="progress-card-label">Semanas registradas</div><div class="progress-card-val">${weeks.length}</div><div class="progress-card-sub">de entrenamiento</div></div><div class="progress-card"><div class="progress-card-label">Ejercicios trackeados</div><div class="progress-card-val">${total}</div><div class="progress-card-sub">con carga registrada</div></div><div class="progress-card"><div class="progress-card-label">Sets registrados</div><div class="progress-card-val">${total*4}</div><div class="progress-card-sub">en total</div></div>`;}
+function saveData(){const payload=JSON.stringify({store,weeks});const encoded=btoa(unescape(encodeURIComponent(payload)));document.getElementById('__data__').value=encoded;const src=document.documentElement.outerHTML;const patched=src.replace(/id="__data__" value="eyJzdG9yZSI6eyJTMSI6eyJlMV8xIjp7InMxIjoiMCIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlMV8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUxXzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTFfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlMV81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUxXzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiczFfbm90ZXMiOiIiLCJlMl8xIjp7InMxIjoiMjIuNSIsInMyIjoiMjUiLCJzMyI6IjI3LjUiLCJzNCI6IjMwIn0sImUyXzIiOnsiczEiOiIyMCIsInMyIjoiMjAiLCJzMyI6IjIwIiwiczQiOiIifSwiZTJfMyI6eyJzMSI6IjEwIiwiczIiOiIxMCIsInMzIjoiMTAiLCJzNCI6IiJ9LCJlMl80Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUyXzUiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTJfNiI6eyJzMSI6IjEyLjUiLCJzMiI6IjEyLjUiLCJzMyI6IjEyLjUiLCJzNCI6IiJ9LCJlMl83Ijp7InMxIjoiMTAiLCJzMiI6IjEwIiwiczMiOiIxMCIsInM0IjoiIn0sImUyXzgiOnsiczEiOiIyNSIsInMyIjoiMjUiLCJzMyI6IjI1IiwiczQiOiIifSwiczJfbm90ZXMiOiIqQ3J1Y2VzIGVuIHBvbGVhIGFsdGE6IDMgYmxvcXVlc1xuKlByZXNzIG1pbGl0YXIgZW4gbcOhcXVpbmE6IDIwLTI1LTMwIiwiZTNfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlM18yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUzXzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTNfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlM181Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUzXzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTNfNyI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJzM19ub3RlcyI6IiIsImU0XzEiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTRfMiI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNF8zIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU0XzQiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTRfNSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNF82Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sInM0X25vdGVzIjoiIiwiZTVfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNV8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU1XzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTVfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNV81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sInM1X25vdGVzIjoiIiwiZTZfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNl8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU2XzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTZfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNl81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU2XzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTZfNyI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJzNl9ub3RlcyI6IiJ9fSwid2Vla3MiOlsiUzEiXX0="]*"/,`id="__data__" value="${encoded}"`);const blob=new Blob([patched],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();URL.revokeObjectURL(a.href);showSaveStatus();}
+function showSaveStatus(){const el=document.getElementById('save-status');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+function exportJSON(){const blob=new Blob([JSON.stringify({store,weeks},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cargas-jg.json';a.click();URL.revokeObjectURL(a.href);}
+function importJSON(){document.getElementById('import-file').click();}
+function handleImport(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);store=data.store||{};weeks=data.weeks||['S1'];currentWeek=weeks[weeks.length-1];renderTracker();showSaveStatus();}catch(err){alert('Error al importar.');}};reader.readAsText(file);}
+function confirmClear(){if(confirm('¿Borrar datos de la semana '+currentWeek+'?')){delete store[currentWeek];renderTracker();}}
+window.onload=()=>{const raw=document.getElementById('__data__').value;if(raw){try{const data=JSON.parse(decodeURIComponent(escape(atob(raw))));store=data.store||{};weeks=data.weeks||['S1'];currentWeek=weeks[weeks.length-1];}catch(e){}}renderWeekTabs();};
 </script>
+<input type="hidden" id="__data__" value="eyJzdG9yZSI6eyJTMSI6eyJlMV8xIjp7InMxIjoiMCIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlMV8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUxXzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTFfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlMV81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUxXzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiczFfbm90ZXMiOiIiLCJlMl8xIjp7InMxIjoiMjIuNSIsInMyIjoiMjUiLCJzMyI6IjI3LjUiLCJzNCI6IjMwIn0sImUyXzIiOnsiczEiOiIyMCIsInMyIjoiMjAiLCJzMyI6IjIwIiwiczQiOiIifSwiZTJfMyI6eyJzMSI6IjEwIiwiczIiOiIxMCIsInMzIjoiMTAiLCJzNCI6IiJ9LCJlMl80Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUyXzUiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTJfNiI6eyJzMSI6IjEyLjUiLCJzMiI6IjEyLjUiLCJzMyI6IjEyLjUiLCJzNCI6IiJ9LCJlMl83Ijp7InMxIjoiMTAiLCJzMiI6IjEwIiwiczMiOiIxMCIsInM0IjoiIn0sImUyXzgiOnsiczEiOiIyNSIsInMyIjoiMjUiLCJzMyI6IjI1IiwiczQiOiIifSwiczJfbm90ZXMiOiIqQ3J1Y2VzIGVuIHBvbGVhIGFsdGE6IDMgYmxvcXVlc1xuKlByZXNzIG1pbGl0YXIgZW4gbcOhcXVpbmE6IDIwLTI1LTMwIiwiZTNfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlM18yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUzXzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTNfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlM181Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImUzXzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTNfNyI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJzM19ub3RlcyI6IiIsImU0XzEiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTRfMiI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNF8zIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU0XzQiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTRfNSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNF82Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sInM0X25vdGVzIjoiIiwiZTVfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNV8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU1XzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTVfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNV81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sInM1X25vdGVzIjoiIiwiZTZfMSI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNl8yIjp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU2XzMiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTZfNCI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJlNl81Ijp7InMxIjoiIiwiczIiOiIiLCJzMyI6IiIsInM0IjoiIn0sImU2XzYiOnsiczEiOiIiLCJzMiI6IiIsInMzIjoiIiwiczQiOiIifSwiZTZfNyI6eyJzMSI6IiIsInMyIjoiIiwiczMiOiIiLCJzNCI6IiJ9LCJzNl9ub3RlcyI6IiJ9fSwid2Vla3MiOlsiUzEiXX0=">
 
-<!-- Hidden data store — do not delete -->
-<input type="hidden" id="__data__" value="">
 
-</body>
-</html>
+</body></html>
